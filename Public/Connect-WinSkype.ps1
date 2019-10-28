@@ -9,6 +9,7 @@ function Connect-WinSkype {
         [alias('mfa')][switch] $MultiFactorAuthentication,
         [switch] $Output
     )
+    $Object = @()
     if (-not $MultiFactorAuthentication) {
         Write-Verbose "Connect-WinSkype - Running connectivity without MFA"
         $Credentials = Request-Credentials -UserName $Username `
@@ -51,8 +52,7 @@ function Connect-WinSkype {
             $Session = $null
             $ErrorMessage = $_.Exception.Message -replace "`n", " " -replace "`r", " "
             if ($Output) {
-                $Object += @{ Status = $false; Output = $SessionName; Extended = "Connection failed with $ErrorMessage" }
-                return $Object
+                return @{ Status = $false; Output = $SessionName; Extended = "Connection failed with $ErrorMessage" }
             } else {
                 Write-Warning -Message "Connect-WinSkype - Failed with error message: $ErrorMessage"
                 return

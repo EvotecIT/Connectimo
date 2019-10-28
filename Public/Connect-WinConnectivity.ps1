@@ -15,7 +15,8 @@
         if (Test-Path -LiteralPath $FilePath) {
             $Password = $FilePath
         } else {
-            Write-Color "[-]", " File with password doesn't exists. Path doesn't exists: $FilePath" -Color Red, Yellow
+            #Write-Color "[-]", " File with password doesn't exists. Path doesn't exists: $FilePath" -Color Red, Yellow
+            Write-Verbose "File with password doesn't exists. Path doesn't exists: $FilePath"
             return
         }
     } else {
@@ -92,7 +93,8 @@
         foreach ($_ in $Configuration.Office365.Keys | Where-Object { $_ -ne 'Credentials' }) {
             if ($_ -eq 'SharePointOnline') {
                 if (-not $Tenant) {
-                    Write-Color "[-]", " Tenant parameter not provided. Skipping connection to SharePoint Online." -Color Red, Yellow
+                    #Write-Color "[-]", " Tenant parameter not provided. Skipping connection to SharePoint Online." -Color Red, Yellow
+                    Write-Verbose "Tenant parameter not provided. Skipping connection to SharePoint Online."
                     continue
                 }
             }
@@ -135,7 +137,8 @@
     )
     if ($Connected.Status -contains $false) {
         foreach ($C in $Connected | Where-Object { $_.Status -eq $false }) {
-            Write-Color -Text 'Connecting to tenant failed for ', $C.Output, ' with error ', $Connected.Extended -Color White, Red, White, Red -LogFile $Configuration.Options.LogsPath
+            #Write-Color -Text 'Connecting to tenant failed for ', $C.Output, ' with error ', $Connected.Extended -Color White, Red, White, Red -LogFile $Configuration.Options.LogsPath
+            Write-Verbose "Connecting to tenant failed for $($C.Output) with error $($Connected.Extended)"
         }
         return
     }

@@ -17,8 +17,7 @@ function Request-Credentials {
         } else {
             # File is not there or couldn't be read
             if ($Output) {
-                $Object = @{ Status = $false; Output = $Service; Extended = 'File with password unreadable.' }
-                return $Object
+                return @{ Status = $false; Output = $Service; Extended = 'File with password unreadable.' }
             } else {
                 Write-Warning "Request-Credentials - Secure password from file couldn't be read. File not readable. Terminating."
                 return
@@ -32,16 +31,14 @@ function Request-Credentials {
             $ErrorMessage = $_.Exception.Message -replace "`n", " " -replace "`r", " "
             if ($ErrorMessage -like '*Key not valid for use in specified state*') {
                 if ($Output) {
-                    $Object = @{ Status = $false; Output = $Service; Extended = "Couldn't use credentials provided. Most likely using credentials from other user/session/computer." }
-                    return $Object
+                    return @{ Status = $false; Output = $Service; Extended = "Couldn't use credentials provided. Most likely using credentials from other user/session/computer." }
                 } else {
                     Write-Warning -Message "Request-Credentials - Couldn't use credentials provided. Most likely using credentials from other user/session/computer."
                     return
                 }
             } else {
                 if ($Output) {
-                    $Object = @{ Status = $false; Output = $Service; Extended = $ErrorMessage }
-                    return $Object
+                    return @{ Status = $false; Output = $Service; Extended = $ErrorMessage }
                 } else {
                     Write-Warning -Message "Request-Credentials - $ErrorMessage"
                     return
@@ -52,11 +49,9 @@ function Request-Credentials {
     } else {
         $NewPassword = $Password
     }
-
     if ($UserName -and $NewPassword) {
         if ($AsSecure) {
             $Credentials = New-Object System.Management.Automation.PSCredential($Username, $NewPassword)
-            #Write-Verbose "Request-Credentials - Using AsSecure option with Username $Username and password: $NewPassword"
         } else {
             Try {
                 $SecurePassword = $Password | ConvertTo-SecureString -asPlainText -Force -ErrorAction Stop
@@ -64,16 +59,14 @@ function Request-Credentials {
                 $ErrorMessage = $_.Exception.Message -replace "`n", " " -replace "`r", " "
                 if ($ErrorMessage -like '*Key not valid for use in specified state*') {
                     if ($Output) {
-                        $Object = @{ Status = $false; Output = $Service; Extended = "Couldn't use credentials provided. Most likely using credentials from other user/session/computer." }
-                        return $Object
+                        return  @{ Status = $false; Output = $Service; Extended = "Couldn't use credentials provided. Most likely using credentials from other user/session/computer." }
                     } else {
                         Write-Warning -Message "Request-Credentials - Couldn't use credentials provided. Most likely using credentials from other user/session/computer."
                         return
                     }
                 } else {
                     if ($Output) {
-                        $Object = @{ Status = $false; Output = $Service; Extended = $ErrorMessage }
-                        return $Object
+                        return @{ Status = $false; Output = $Service; Extended = $ErrorMessage }
                     } else {
                         Write-Warning -Message "Request-Credentials - $ErrorMessage"
                         return
@@ -81,23 +74,18 @@ function Request-Credentials {
                 }
             }
             $Credentials = New-Object System.Management.Automation.PSCredential($Username, $SecurePassword)
-            #Write-Verbose "Request-Credentials - Using AsSecure option with Username $Username and password: $NewPassword converted to $SecurePassword"
         }
     } else {
         if ($Output) {
-            $Object = @{ Status = $false; Output = $Service; Extended = 'Username or/and Password is empty' }
-            return $Object
+            return @{ Status = $false; Output = $Service; Extended = 'Username or/and Password is empty' }
         } else {
             Write-Warning -Message 'Request-Credentials - UserName or Password are empty.'
             return
         }
     }
     if ($NetworkCredentials) {
-        $RewritePassword = $Credentials.GetNetworkCredential()
-        #Get-ObjectType $RewritePassword -VerboseOnly -Verbose
-        return $RewritePassword
+        return $Credentials.GetNetworkCredential()
     } else {
-        #Get-ObjectType $Credentials -VerboseOnly -Verbose
         return $Credentials
     }
 }
