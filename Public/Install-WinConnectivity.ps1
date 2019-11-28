@@ -1,7 +1,7 @@
 function Install-WinConnectity {
     [CmdletBinding()]
     param(
-        [ValidateSet('MSOnline', 'AzureAD', 'SharePoint', 'ExchangeOnline', 'SkypeOnline', 'Teams' )][string[]] $Module,
+        [ValidateSet('MSOnline', 'AzureAD', 'SharePoint', 'ExchangeOnline', 'ExchangeOnlineV2', 'SkypeOnline', 'Teams' )][string[]] $Module,
         [switch] $All,
         [switch] $Force
     )
@@ -16,7 +16,7 @@ function Install-WinConnectity {
     }
     if ($Module -eq 'AzureAD' -or $All) {
         Write-Verbose "Installing AzureAD Powershell Module"
-        Install-Module -Name AzureAD @Splat
+        Install-Module -Name AzureADPreview @Splat
     }
     #Install-Module SkypeOnlineConnector
     if ($Module -eq 'SharePoint' -or $All) {
@@ -39,5 +39,9 @@ function Install-WinConnectity {
     if ($Module -eq 'SkypeOnline' -or $All) {
         Write-Verbose "Installing Microsoft Skype Online PowerShell Module"
         # TO DO
+    }
+    if ($Module -eq 'ExchangeOnlineV2' -or $All) {
+        Write-Verbose "Installing Exchange Online V2 PowerShell Module"
+        Install-Module -Name ExchangeOnlineManagement @Splat
     }
 }
