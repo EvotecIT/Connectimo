@@ -7,7 +7,8 @@
         [switch] $AsSecure,
         [switch] $MultiFactorAuthentication,
         [Parameter(Mandatory = $true)][ValidateSet('All', 'AzureAD', 'ExchangeOnline', 'MSOnline', 'SecurityCompliance', 'SharePointOnline', 'SkypeOnline', 'Teams')][string[]] $Service,
-        [string] $Tenant
+        [string] $Tenant,
+        [string] $Prefix = ''
     )
 
     if ($FilePath) {
@@ -42,20 +43,20 @@
             AzureAD            = [ordered] @{
                 Use         = $false
                 SessionName = 'O365 Azure AD' # Azure
-                Prefix      = ''
+                Prefix      = $Prefix
             }
             ExchangeOnline     = [ordered] @{
                 Use            = $false
                 Authentication = 'Basic'
                 ConnectionURI  = 'https://outlook.office365.com/powershell-liveid/'
-                Prefix         = 'O365'
+                Prefix         = $Prefix
                 SessionName    = 'O365 Exchange'
             }
             SecurityCompliance = [ordered] @{
                 Use            = $false
                 Authentication = 'Basic'
                 ConnectionURI  = 'https://ps.compliance.protection.outlook.com/PowerShell-LiveId'
-                Prefix         = 'O365'
+                Prefix         = $Prefix
                 SessionName    = 'O365 Security And Compliance'
             }
             SharePointOnline   = [ordered] @{
@@ -117,10 +118,10 @@
             Connect-WinAzureAD @BundleCredentials -Output -SessionName $Configuration.Office365.AzureAD.SessionName -Verbose
         }
         if ($Configuration.Office365.ExchangeOnline.Use) {
-            Connect-WinExchange @BundleCredentials -Output -SessionName $Configuration.Office365.ExchangeOnline.SessionName -ConnectionURI $Configuration.Office365.ExchangeOnline.ConnectionURI -Authentication $Configuration.Office365.ExchangeOnline.Authentication -Verbose
+            Connect-WinExchange @BundleCredentials -Output -SessionName $Configuration.Office365.ExchangeOnline.SessionName -ConnectionURI $Configuration.Office365.ExchangeOnline.ConnectionURI -Authentication $Configuration.Office365.ExchangeOnline.Authentication -Verbose -Prefix $Prefix
         }
         if ($Configuration.Office365.SecurityCompliance.Use) {
-            Connect-WinSecurityCompliance @BundleCredentials -Output -SessionName $Configuration.Office365.SecurityCompliance.SessionName -ConnectionURI $Configuration.Office365.SecurityCompliance.ConnectionURI -Authentication $Configuration.Office365.SecurityCompliance.Authentication -Verbose
+            Connect-WinSecurityCompliance @BundleCredentials -Output -SessionName $Configuration.Office365.SecurityCompliance.SessionName -ConnectionURI $Configuration.Office365.SecurityCompliance.ConnectionURI -Authentication $Configuration.Office365.SecurityCompliance.Authentication -Verbose -Prefix $Prefix
         }
         if ($Configuration.Office365.SkypeOnline.Use) {
             Connect-WinSkype @BundleCredentials -Output -SessionName $Configuration.Office365.SkypeOnline.SessionName -Verbose
@@ -132,7 +133,7 @@
             Connect-WinTeams @BundleCredentials -Output -SessionName $Configuration.Office365.Teams.SessionName -Verbose
         }
         if ($Configuration.OnPremises.Exchange.Use) {
-            Connect-WinExchange @BundleCredentialsOnPremises -Output -SessionName $Configuration.OnPremises.Exchange.SessionName -ConnectionURI $Configuration.OnPremises.Exchange.ConnectionURI -Authentication $Configuration.OnPremises.Exchange.Authentication -Verbose
+            Connect-WinExchange @BundleCredentialsOnPremises -Output -SessionName $Configuration.OnPremises.Exchange.SessionName -ConnectionURI $Configuration.OnPremises.Exchange.ConnectionURI -Authentication $Configuration.OnPremises.Exchange.Authentication -Verbose -Prefix $Prefix
         }
     )
     if ($Connected.Status -contains $false) {

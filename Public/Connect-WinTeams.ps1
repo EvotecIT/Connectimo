@@ -10,6 +10,7 @@ function Connect-WinTeams {
         [switch] $Output
     )
     if (-not $MultiFactorAuthentication) {
+        Write-Verbose "Connect-WinTeams - Running connectivity without MFA"
         $Credentials = Request-Credentials -UserName $Username `
             -Password $Password `
             -AsSecure:$AsSecure `
@@ -24,6 +25,8 @@ function Connect-WinTeams {
                 return
             }
         }
+    } else {
+        Write-Verbose "Connect-WinTeams - Running connectivity with MFA"
     }
     try {
         # If it's mfa $Credentials will be $null so it will ask with a prompt

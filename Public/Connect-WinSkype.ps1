@@ -26,6 +26,8 @@ function Connect-WinSkype {
                 return
             }
         }
+    } else {
+        Write-Verbose "Connect-WinSkype - Running connectivity with MFA"
     }
     $ExistingSession = Get-PSSession -Name $SessionName -ErrorAction SilentlyContinue
     if ($ExistingSession.Availability -contains 'Available') {

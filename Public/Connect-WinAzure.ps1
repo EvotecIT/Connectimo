@@ -25,6 +25,8 @@ function Connect-WinAzure {
                 return
             }
         }
+    } else {
+        Write-Verbose "Connect-WinAzure - Running connectivity with MFA"
     }
     try {
         # If it's mfa $Credentials will be $null so it will ask with a prompt

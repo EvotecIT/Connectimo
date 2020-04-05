@@ -25,9 +25,11 @@ function Connect-WinAzureAD {
                 return
             }
         }
+    }else {
+        Write-Verbose "Connect-WinAzureAD - Running connectivity with MFA"
     }
     try {
-           # If it's mfa $Credentials will be $null so it will ask with a prompt
+        # If it's mfa $Credentials will be $null so it will ask with a prompt
         $Session = Connect-AzureAD -Credential $Credentials -ErrorAction Stop
     } catch {
         $Session = $null
